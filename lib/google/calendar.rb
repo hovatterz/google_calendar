@@ -1,4 +1,5 @@
 require 'nokogiri'
+require "cgi"
 
 module Google
 
@@ -223,14 +224,13 @@ module Google
     def setup_event(event) #:nodoc:
       event.calendar = self
       if block_given?
-      	yield(event)
-	event.title = event.title.encode(:xml => :text) if event.title
-	event.content = event.content.encode(:xml => :text) if event.content
-	event.where = event.where.encode(:xml => :text) if event.where
+        yield(event)
+        event.title = CGI.escapeHTML(event.title) if event.title
+        event.content = CGI.escapeHTML(event.content) if event.content
+        event.where = CGI.escapeHTML(event.where) if event.where
       end
       event.save
       event
     end
   end
-
 end
